@@ -1,4 +1,6 @@
 // This component is an example on how to replace the composer input of the web chat (text input)
+import VoiceRecorder from './VoiceRecorder'
+import axios from 'axios'
 
 import React, { useState , useEffect } from 'react'
 import style from './style.scss'
@@ -48,19 +50,40 @@ export const Composer = props => {
     setInput('')
   }
 
+  const onVoiceStart = () => {
+    //this.setState({ isRecording: true })
+  }
+  
+  const onVoiceEnd = async (voice, ext) => {
+    //this.setState({ isRecording: false })
+    let data = {
+      buffer: voice.toString('base64'), 
+      string: ext 
+    }
+    const postResponse = await axios.post('http://127.0.0.1:2000/data', data)
+    setInput(postResponse['data'])
+    //await props.store.composer.updateMessage(postResponse['data'])
+  }
+
+  const onVoiceNotAvailable = () => {
+    console.warn(
+      'Voice input is not available on this browser. Please check https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder for compatibility'
+    )
+  }
+
   return (
     <div className={style.wrapper}>
       <input
         className={style.input}
         type="text"
-        placeholder="custom composer input..."
+        placeholder="Custom Composer Input"
         onChange={handleChange}
-        //value = "SUCCESS!!"
         value={input}
       />
       <button className={style.btn} type="button" onClick={handleOnClick} disabled={isDisabled}>
         send
       </button>
+      <VoiceRecorder onStart={onVoiceStart} onDone={onVoiceEnd} onNotAvailable={onVoiceNotAvailable} />
     </div>
   )
 }

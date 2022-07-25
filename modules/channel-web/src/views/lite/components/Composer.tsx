@@ -92,17 +92,15 @@ class Composer extends React.Component<ComposerProps, { isRecording: boolean }> 
   
   onVoiceEnd = async (voice: Buffer, ext: string) => {
     this.setState({ isRecording: false })
-    console.log(voice)
-    console.log(ext)
-
+    /*
     let data = {
       buffer: voice.toString('base64'), 
       string: ext 
     }
     const postResponse = await axios.post('http://127.0.0.1:2000/data', data)
-    //console.log(postResponse['data'])
     await this.props.updateMessage(postResponse['data'])
-    //await this.props.sendVoiceMessage(voice, ext)
+    */
+    await this.props.sendVoiceMessage(voice, ext)
   }
 
   onVoiceNotAvailable = () => {
@@ -140,7 +138,6 @@ class Composer extends React.Component<ComposerProps, { isRecording: boolean }> 
               onFocus={this.props.setFocus.bind(this, 'input')}
               placeholder={placeholder}
               onChange={this.handleMessageChanged}
-              //value = 'SUCCESS!!'
               value={this.props.message}
               onKeyPress={this.handleKeyPress}
               onKeyDown={this.handleKeyDown}
